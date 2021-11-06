@@ -27,6 +27,11 @@
 	<p>
 	ROM disassembly and tables digitization made by <b>g3sl@protonmail.ch</b>. Feel free to send me you comments suggestions and fixes.
 	</p>
+	<h2>Changelog</h2>
+	<ul>
+		<li><p><b>2021-11-06</b> Fix function headers, minor typos fixes.</p></li>
+		<li><p><b>2021-10-27</b> Initial document.</p></li>
+	</ul>
 	<h2>RAM variables</h2>
 	<table>
 		<tbody class="header">
@@ -3323,14 +3328,23 @@ character has not been found.</p>
 				<td>60</td>
 				<td class="fit">RTS</td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Initialize command tables &amp; pointers</h1>
+<p>Find length of command string and zero
+all variables and pointers.</p>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">CMDSET</td><td class="fit">C2B3</td>
 				<td>A4 A3</td>
-				<td class="fit">LDY $A3</td><td rowspan="2"><p>Initialize command tables &amp; pointers
-Find length of command string and zero
-all variables and pointers.
-Load .Y from BUFTAB+CBPTR ($A3). This is
+				<td class="fit">LDY $A3</td><td rowspan="2"><p>Load .Y from BUFTAB+CBPTR ($A3). This is
 the length of the command that was sent
 from the computer. If .Y=0, branch to
 CS08 ($C2CB) .</p>
@@ -3625,17 +3639,25 @@ AD10 to do the next one. If not, RTS</p>
 				<td>60</td>
 				<td class="fit">RTS</td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Set drive # from text or default to 0</h1>
+<p>On entry and exit .A is an index into
+the command buffer. On entry .Y is the default drive #.</p>
+<p>On exit it is the drive specified or the
+default drive.</p>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">SETDRV</td><td class="fit">C33C</td>
 				<td>AA</td>
-				<td class="fit">TAX</td><td rowspan="1"><p>Set drive # from text or default to
-On entry and exit .A is an index into
-the command buffer.
-On entry .Y is the default drive #. On
-exit it is the drive specified or the
-default drive.
-Move pointer into command buffer from
+				<td class="fit">TAX</td><td rowspan="1"><p>Move pointer into command buffer from
 .A to .X</p>
 </td></tr>
 		</tbody>
@@ -3722,14 +3744,22 @@ command string and exit with an RTS.</p>
 				<td>60</td>
 				<td class="fit">RTS</td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Set drive # from command string with the syntax: X#: FILENAME</h1>
+<p>On entry .X points to the # in the command string.</p>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">SD40</td><td class="fit">C352</td>
 				<td>BD 00 02</td>
-				<td class="fit">LDA $0200,X</td><td rowspan="1"><p>Set drive # from command string with the
-syntax: X#: FILENAME. On entry .X points
-to the # in the command string.
-Load .A with the drive number (in ASCII)
+				<td class="fit">LDA $0200,X</td><td rowspan="1"><p>Load .A with the drive number (in ASCII)
 from CMDBUF,X ($0200, X).</p>
 </td></tr>
 		</tbody>
@@ -5259,12 +5289,21 @@ record size from (DIRBUF) ,Y to REC.</p>
 				<td>8D 58 02</td>
 				<td class="fit">STA $0258</td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Check table for unfound files</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">CMPCHK</td><td class="fit">C589</td>
 				<td>A9 FF</td>
-				<td class="fit">LDA #$FF</td><td rowspan="4"><p>Check table for unfound files
-Set all-files-found flag, FOUND ($028F)
+				<td class="fit">LDA #$FF</td><td rowspan="4"><p>Set all-files-found flag, FOUND ($028F)
 to $FF. Move the number of files to test
 from F2CNT ($0278) to F2PTR ($0279).</p>
 </td></tr>
@@ -5738,26 +5777,35 @@ sector we are checking in SECTOR ($81) .</p>
 			
 				<tr><td class="fit"></td><td class="fit">C637</td>
 				<td>A5 81</td>
-				<td class="fit">LDA $81</td><td rowspan="2"><p>Save the current sector number from
+				<td class="fit">LDA $81</td><td rowspan="3"><p>Save the current sector number from
 SECTOR ($81) in DIRSEC ($0290) and RTS.</p>
 </td></tr>
 				<tr><td></td><td class="fit">C639</td>
 				<td>8D 90 02</td>
 				<td class="fit">STA $0290</td></tr>
+				<tr><td></td><td class="fit">C63C</td>
+				<td>60</td>
+				<td class="fit">RTS</td></tr>
+		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Check drive for active diskette, init if needed</h1>
+<p>Return no drive status.</p>
+</td>
+			</tr>
 		</tbody>
 			<tbody class="code">
 			
-				<tr><td class="fit">AUTOI</td><td class="fit">C63C</td>
-				<td>60</td>
-				<td class="fit">RTS</td><td rowspan="3"><p>Check drive for active diskette, init
-if needed. Return no drive status.
-Test auto-initialization flag, AUTOFG
+				<tr><td class="fit">AUTOI</td><td class="fit">C63D</td>
+				<td>A5 68</td>
+				<td class="fit">LDA $68</td><td rowspan="2"><p>Test auto-initialization flag, AUTOFG
 ($68). If AUTOFG &lt;&gt; 0, auto-init is
 disabled so branch to AUT02 ($C669).</p>
 </td></tr>
-				<tr><td></td><td class="fit">C63D</td>
-				<td>A5 68</td>
-				<td class="fit">LDA $68</td></tr>
 				<tr><td></td><td class="fit">C63F</td>
 				<td>D0 28</td>
 				<td class="fit">BNE $C669</td></tr>
@@ -5814,7 +5862,7 @@ diskette is present.</p>
 				<td>C9 02</td>
 				<td class="fit">CMP #$02</td><td rowspan="2"><p>Compare the value in return job code in
 .A with $02. If equal, NO SYNC was found
-so branch to AUTOI to abort.</p>
+so branch to AUTO1 to abort.</p>
 </td></tr>
 				<tr><td></td><td class="fit">C653</td>
 				<td>F0 0A</td>
@@ -5826,7 +5874,7 @@ so branch to AUTOI to abort.</p>
 				<td>C9 03</td>
 				<td class="fit">CMP #$03</td><td rowspan="2"><p>Compare the value in return job code in
 .A with $03. If equal, NO HEADER was
-found so branch to AUTOI to abort.</p>
+found so branch to AUTO1 to abort.</p>
 </td></tr>
 				<tr><td></td><td class="fit">C657</td>
 				<td>F0 06</td>
@@ -5838,7 +5886,7 @@ found so branch to AUTOI to abort.</p>
 				<td>C9 0F</td>
 				<td class="fit">CMP #$0F</td><td rowspan="2"><p>Compare the value in return job code in
 .A with $0F. If equal, NO DRIVE was
-found so branch to AUTOI to abort.</p>
+found so branch to AUTO1 to abort.</p>
 </td></tr>
 				<tr><td></td><td class="fit">C65B</td>
 				<td>F0 02</td>
@@ -6085,13 +6133,21 @@ branch back to TRIO to do next character</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Find the limit (end) of the string in the command buffer that is pointed to by X</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">FNDLMT</td><td class="fit">C6A6</td>
 				<td>A9 00</td>
-				<td class="fit">LDA #$00</td><td rowspan="4"><p>Find the limit (end) of the string in the
-command buffer that is pointed to by X
-Zero the string size, STRSIZ ($024B).
+				<td class="fit">LDA #$00</td><td rowspan="4"><p>Zero the string size, STRSIZ ($024B).
 Transfer the starting pointer from .X
 to .A and save it on the stack.</p>
 </td></tr>
@@ -6263,12 +6319,21 @@ from the stack and reset these variables</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate the routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Get file entry subroutine</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">GNSUB</td><td class="fit">C6DE</td>
 				<td>A9 11</td>
-				<td class="fit">LDA #$11</td><td rowspan="2"><p>Get file entry subroutine:
-Set current secondary address, SA ($83)
+				<td class="fit">LDA #$11</td><td rowspan="2"><p>Set current secondary address, SA ($83)
 to $11 (internal read secondary address)</p>
 </td></tr>
 				<tr><td></td><td class="fit">C6E0</td>
@@ -6834,12 +6899,21 @@ entry. On return, set the carry bit.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate the routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Blank the name buffer</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">BLKNB</td><td class="fit">C7AC</td>
 				<td>A0 1B</td>
-				<td class="fit">LDY #$1B</td><td rowspan="2"><p>Balnk the name buffer:
-Load .Y with $1B, the length of the name
+				<td class="fit">LDY #$1B</td><td rowspan="2"><p>Load .Y with $1B, the length of the name
 buffer, and .A with $20, a space.</p>
 </td></tr>
 				<tr><td></td><td class="fit">C7AE</td>
@@ -9156,12 +9230,21 @@ CMDERR ($C1C8) .</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Check existance of I/O file</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">CHKIO</td><td class="fit">CAE7</td>
 				<td>20 CC CA</td>
-				<td class="fit">JSR $CACC</td><td rowspan="1"><p>Check existance of I/O file:
-JSR to CHKIN ($CACC) to check for the
+				<td class="fit">JSR $CACC</td><td rowspan="1"><p>JSR to CHKIN ($CACC) to check for the
 existance of the input file.</p>
 </td></tr>
 		</tbody>
@@ -15025,12 +15108,21 @@ to FRECO.</p>
 channel, simply exit with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Free data channel associated with SA</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">FRECO</td><td class="fit">D22E</td>
 				<td>A6 83</td>
-				<td class="fit">LDX $83</td><td rowspan="1"><p>Free data channel associated with SA:
-Load .X with the secondary address from
+				<td class="fit">LDX $83</td><td rowspan="1"><p>Load .X with the secondary address from
 SA ($83) .</p>
 </td></tr>
 		</tbody>
@@ -15157,12 +15249,21 @@ LINUSE ($0256) .</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Release buffers associated with channel</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">RELBUF</td><td class="fit">D25A</td>
 				<td>A6 82</td>
-				<td class="fit">LDX $82</td><td rowspan="1"><p>Release buffers associated with channel:
-Load .X with the channel number from
+				<td class="fit">LDX $82</td><td rowspan="1"><p>Load .X with the channel number from
 LINDX ($82) .</p>
 </td></tr>
 		</tbody>
@@ -16163,12 +16264,21 @@ routine with an RTS.</p>
 				<td>60</td>
 				<td class="fit">RTS</td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Find free LINDX and allocate in LINUSE</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">FNDLDX</td><td class="fit">D37F</td>
 				<td>A0 00</td>
-				<td class="fit">LDY #$00</td><td rowspan="2"><p>Find free LINDX and allocate in LINUSE
-Load .Y with $00 and .A with $01.</p>
+				<td class="fit">LDY #$00</td><td rowspan="2"><p>Load .Y with $00 and .A with $01.</p>
 </td></tr>
 				<tr><td></td><td class="fit">D381</td>
 				<td>A9 01</td>
@@ -16759,15 +16869,23 @@ for the error channel in CHNDAT+ERRCHN
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Read in the next block of a file by following the track and sector link</h1>
+<p>Set an EOF (end of file) indicator if
+the track link (first byte) is $00.</p>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">NXTBUF</td><td class="fit">D44D</td>
 				<td>20 93 DF</td>
-				<td class="fit">JSR $DF93</td><td rowspan="3"><p>Read in the next block of a file by
-following the track and sector link.
-Set an EOF (end of file) indicator if
-the track link (first byte) is $00.
-JSR to GETACT ($DF93) to get the active
+				<td class="fit">JSR $DF93</td><td rowspan="3"><p>JSR to GETACT ($DF93) to get the active
 buffer number (in .A). Multiply the
 buffer number by 2 (ASL) and transfer it
 to .X.</p>
@@ -17699,12 +17817,21 @@ HDRS+1,X ($07, X) to SECTOR ($81).</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Check for bad track and sector values</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">TSCHK</td><td class="fit">D55F</td>
 				<td>A5 80</td>
-				<td class="fit">LDA $80</td><td rowspan="2"><p>Check for bad track and sector values:
-Load .A from TRACK ($80). If the track
+				<td class="fit">LDA $80</td><td rowspan="2"><p>Load .A from TRACK ($80). If the track
 is $00, branch back to TSER1 ($D54D).</p>
 </td></tr>
 				<tr><td></td><td class="fit">D561</td>
@@ -17748,12 +17875,21 @@ track. If too large, branch to TSER1.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Bad DOS version number</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">VNERR</td><td class="fit">D572</td>
 				<td>20 52 D5</td>
-				<td class="fit">JSR $D552</td><td rowspan="1"><p>Bad DOS version number:
-JSR to HED2TS ($D552) to store the
+				<td class="fit">JSR $D552</td><td rowspan="1"><p>JSR to HED2TS ($D552) to store the
 values in TRACK ($80) and SECTOR ($81).</p>
 </td></tr>
 		</tbody>
@@ -18603,12 +18739,21 @@ finished so branch back to HOF2.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Step head inward or outward 1 track</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">MCVHED</td><td class="fit">D693</td>
 				<td>48</td>
-				<td class="fit">PHA</td><td rowspan="1"><p>Step head inward or outward 1 track:
-Save the value in .A onto the stack.</p>
+				<td class="fit">PHA</td><td rowspan="1"><p>Save the value in .A onto the stack.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
@@ -21141,6 +21286,9 @@ sector so branch to AP30.</p>
 				<td>20 A3 D1</td>
 				<td class="fit">JSR $D1A3</td><td rowspan="2"><p>No space left in this sector so JSR to
 WRT0 ($D1A3) to get the next sector.</p>
+<p>Load .A with $02 so it. points to the
+start of the data area for this new
+sector.</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA40</td>
 				<td>A9 02</td>
@@ -21150,17 +21298,18 @@ WRT0 ($D1A3) to get the next sector.</p>
 			
 				<tr><td class="fit">AP30</td><td class="fit">DA42</td>
 				<td>20 C8 D4</td>
-				<td class="fit">JSR $D4C8</td><td rowspan="1"><p>Load .A with $02 so it. points to the
-start of the data area for this new
-sector.</p>
+				<td class="fit">JSR $D4C8</td><td rowspan="1"><p>JSR to SETPNT ($D4C8) to set the active
+buffer pointers.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DA45</td>
 				<td>A6 82</td>
-				<td class="fit">LDX $82</td><td rowspan="3"><p>JSR to SETPNT ($D4C8) to set the active
-buffer pointers.</p>
+				<td class="fit">LDX $82</td><td rowspan="3"><p>Load .X with the active buffer number
+from LINDX ($82) and store $01 (channel
+ready at the end of file) in the channel
+status flag CHNRDY,X ($F2,X).</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA47</td>
 				<td>A9 01</td>
@@ -21173,10 +21322,11 @@ buffer pointers.</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA4B</td>
 				<td>A9 80</td>
-				<td class="fit">LDA #$80</td><td rowspan="4"><p>Load .X with the active buffer number
-from LINDX ($82) and store $01 (channel
-ready at the end of file) in the channel
-status flag CHNRDY,X ($F2,X).</p>
+				<td class="fit">LDA #$80</td><td rowspan="4"><p>Load .X with the sec. address SA ($83) .
+Load .A with $80, OR it with the active
+buffer number in LINDX ($82). and store
+the result in LINTAB,X ($022B,X) to
+indicate that this is now a write file.</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA4D</td>
 				<td>05 82</td>
@@ -21192,22 +21342,8 @@ status flag CHNRDY,X ($F2,X).</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA54</td>
 				<td>60</td>
-				<td class="fit">RTS</td><td rowspan="1"><p>Load .X with the sec. address SA ($83) .
-Load .A with $80, OR it with the active
-buffer number in LINDX ($82). and store
-the result in LINTAB,X ($022B,X) to
-indicate that this is now a write file.</p>
+				<td class="fit">RTS</td><td rowspan="1"><p>Terminate the routine with an RTS.</p>
 </td></tr>
-		</tbody>
-			<tbody class="code">
-			
-				<tr><td class="fit">LOADIR</td><td class="fit">DA55</td>
-				<td>A9 0C</td>
-				<td class="fit">LDA #$0C</td><td rowspan="2"><p>Terminate the routine with an RTS.</p>
-</td></tr>
-				<tr><td></td><td class="fit">DA57</td>
-				<td>8D 2A 02</td>
-				<td class="fit">STA $022A</td></tr>
 		</tbody>
 		<tbody class="header">
 			<tr>
@@ -21221,17 +21357,31 @@ indicate that this is now a write file.</p>
 		</tbody>
 			<tbody class="code">
 			
+				<tr><td class="fit">LOADIR</td><td class="fit">DA55</td>
+				<td>A9 0C</td>
+				<td class="fit">LDA #$0C</td><td rowspan="2"><p>Store $0C (load) as the command code in
+CMDNUM ($022A) .</p>
+</td></tr>
+				<tr><td></td><td class="fit">DA57</td>
+				<td>8D 2A 02</td>
+				<td class="fit">STA $022A</td></tr>
+		</tbody>
+			<tbody class="code">
+			
 				<tr><td class="fit"></td><td class="fit">DA5A</td>
 				<td>A9 00</td>
-				<td class="fit">LDA #$00</td><td rowspan="1"><p>Store $0C (load) as the command code in
-CMDNUM ($022A) .</p>
+				<td class="fit">LDA #$00</td><td rowspan="1"><p>Load .A with $00 (load only drive #0)</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DA5C</td>
 				<td>AE 74 02</td>
-				<td class="fit">LDX $0274</td><td rowspan="3"><p>Load .A with $00 (load only drive #0)</p>
+				<td class="fit">LDX $0274</td><td rowspan="3"><p>Load .X with the command length from
+CMDSIZ ($0274) and decrement &quot; the length
+in .X by 1. If the result is $00, branch
+to LD02 to load complete directory for
+drive 0.</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA5F</td>
 				<td>CA</td>
@@ -21244,11 +21394,9 @@ CMDNUM ($022A) .</p>
 			
 				<tr><td class="fit">LD01</td><td class="fit">DA62</td>
 				<td>CA</td>
-				<td class="fit">DEX</td><td rowspan="2"><p>Load .X with the command length from
-CMDSIZ ($0274) and decrement &quot; the length
-in .X by 1. If the result is $00, branch
-to LD02 to load complete directory for
-drive 0.</p>
+				<td class="fit">DEX</td><td rowspan="2"><p>Decrement the length in .X by 1. If the
+result is still not $00, this must be a
+selective load by name so branch to LD03</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA63</td>
 				<td>D0 21</td>
@@ -21258,9 +21406,11 @@ drive 0.</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA65</td>
 				<td>AD 01 02</td>
-				<td class="fit">LDA $0201</td><td rowspan="3"><p>Decrement the length in .X by 1. If the
-result is still not $00, this must be a
-selective load by name so branch to LD03</p>
+				<td class="fit">LDA $0201</td><td rowspan="3"><p>Load .A with the second character in the
+command string from CMDBUF+i ($0201) and
+JSR to TST0V1 ($C3BD) to test if the
+character is an ASCII &quot;0&quot; or &quot;1&quot;. If
+not, branch to LD03 to load by name.</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA68</td>
 				<td>20 BD C3</td>
@@ -21273,19 +21423,16 @@ selective load by name so branch to LD03</p>
 			
 				<tr><td class="fit">LD02</td><td class="fit">DA6D</td>
 				<td>85 E2</td>
-				<td class="fit">STA $E2</td><td rowspan="1"><p>Load .A with the second character in the
-command string from CMDBUF+i ($0201) and
-JSR to TST0V1 ($C3BD) to test if the
-character is an ASCII &quot;0&quot; or &quot;1&quot;. If
-not, branch to LD03 to load by name.</p>
+				<td class="fit">STA $E2</td><td rowspan="1"><p>Store the drive number desired (in .A)
+into FILDRV ($E2) .</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DA6F</td>
 				<td>EE 77 02</td>
-				<td class="fit">INC $0277</td><td rowspan="3"><p>Store the drive number desired (in .A)
-into FILDRV ($E2) .</p>
+				<td class="fit">INC $0277</td><td rowspan="3"><p>Increment F1CNT ($0277). F2CNT ($0278),
+and FILTBL ($027A) .</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA72</td>
 				<td>EE 78 02</td>
@@ -21298,8 +21445,8 @@ into FILDRV ($E2) .</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA78</td>
 				<td>A9 80</td>
-				<td class="fit">LDA #$80</td><td rowspan="2"><p>Increment F1CNT ($0277). F2CNT ($0278),
-and FILTBL ($027A) .</p>
+				<td class="fit">LDA #$80</td><td rowspan="2"><p>Store $80 in PATTYP ($E7) to represent
+the file type.</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA7A</td>
 				<td>85 E7</td>
@@ -21309,8 +21456,9 @@ and FILTBL ($027A) .</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA7C</td>
 				<td>A9 2A</td>
-				<td class="fit">LDA #$2A</td><td rowspan="3"><p>Store $80 in PATTYP ($E7) to represent
-the file type.</p>
+				<td class="fit">LDA #$2A</td><td rowspan="3"><p>Store $2A ( &quot; * &quot; ) as the first two b&gt;tes
+in the command string CMDBUF ($0200) and
+CMDBUF+1 ($0201)</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA7E</td>
 				<td>8D 00 02</td>
@@ -21323,16 +21471,16 @@ the file type.</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA84</td>
 				<td>D0 18</td>
-				<td class="fit">BNE $DA9E</td><td rowspan="1"><p>Store $2A ( &quot; * &quot; ) as the first two b&gt;tes
-in the command string CMDBUF ($0200) and
-CMDBUF+1 ($0201)</p>
+				<td class="fit">BNE $DA9E</td><td rowspan="1"><p>Branch always to LD10.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">LD03</td><td class="fit">DA86</td>
 				<td>20 E5 C1</td>
-				<td class="fit">JSR $C1E5</td><td rowspan="2"><p>Branch always to LD10.</p>
+				<td class="fit">JSR $C1E5</td><td rowspan="2"><p>JSR to PRSCLN ($C2DC) to find the colon
+in the command string. If no colon is
+found. branch to LD05.</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA89</td>
 				<td>D0 05</td>
@@ -21342,24 +21490,23 @@ CMDBUF+1 ($0201)</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA8B</td>
 				<td>20 DC C2</td>
-				<td class="fit">JSR $C2DC</td><td rowspan="1"><p>JSR to PRSCLN ($C2DC) to find the colon
-in the command string. If no colon is
-found. branch to LD05.</p>
+				<td class="fit">JSR $C2DC</td><td rowspan="1"><p>Colon found so JSR to CMDRST ($C2DC) to
+zero all command string variables.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DA8E</td>
 				<td>A0 03</td>
-				<td class="fit">LDY #$03</td><td rowspan="1"><p>Colon found so JSR to CMDRST ($C2DC) to
-zero all command string variables.</p>
+				<td class="fit">LDY #$03</td><td rowspan="1"><p>Lead .Y with $03.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">LD05</td><td class="fit">DA90</td>
 				<td>88</td>
-				<td class="fit">DEY</td><td rowspan="3"><p>Lead .Y with $03.</p>
+				<td class="fit">DEY</td><td rowspan="3"><p>Decrement .Y twice and store the result,
+in FILTBL ($027A) .</p>
 </td></tr>
 				<tr><td></td><td class="fit">DA91</td>
 				<td>88</td>
@@ -21372,89 +21519,90 @@ zero all command string variables.</p>
 			
 				<tr><td class="fit"></td><td class="fit">DA95</td>
 				<td>20 00 C2</td>
-				<td class="fit">JSR $C200</td><td rowspan="1"><p>Decrement .Y twice and store the result,
-in FILTBL ($027A) .</p>
+				<td class="fit">JSR $C200</td><td rowspan="1"><p>JSR to TC35 ($C200) to parse and set-
+up the tables.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DA98</td>
 				<td>20 98 C3</td>
-				<td class="fit">JSR $C398</td><td rowspan="1"><p>JSR to TC35 ($C200) to parse and set-
-up the tables.</p>
+				<td class="fit">JSR $C398</td><td rowspan="1"><p>JSF to FS1SET ($C398) to set pointers to
+file name and check type.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DA9B</td>
 				<td>20 20 C3</td>
-				<td class="fit">JSR $C320</td><td rowspan="1"><p>JSF to FS1SET ($C398) to set pointers to
-file name and check type.</p>
+				<td class="fit">JSR $C320</td><td rowspan="1"><p>JSR to ALLDRS ($C320) to set up all
+drives required.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">LD10</td><td class="fit">DA9E</td>
 				<td>20 CA C3</td>
-				<td class="fit">JSR $C3CA</td><td rowspan="1"><p>JSR to ALLDRS ($C320) to set up all
-drives required.</p>
+				<td class="fit">JSR $C3CA</td><td rowspan="1"><p>JSR to OPTSCH ($C3CA) to determine the
+best drive search pattern.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DAA1</td>
 				<td>20 B7 C7</td>
-				<td class="fit">JSR $C7B7</td><td rowspan="1"><p>JSR to OPTSCH ($C3CA) to determine the
-best drive search pattern.</p>
-</td></tr>
-		</tbody>
-			<tbody class="code">
-			
-				<tr><td class="fit"></td><td class="fit">DAA4</td>
-				<td>20 9D C4</td>
-				<td class="fit">JSR $C49D</td><td rowspan="1"><p>JSR to NEWDIR ($C7B7) to read in BAM and
+				<td class="fit">JSR $C7B7</td><td rowspan="1"><p>JSR to NEWDIR ($C7B7) to read in BAM and
 set up disk name, ID, etc as first line
 in directory.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
+				<tr><td class="fit"></td><td class="fit">DAA4</td>
+				<td>20 9D C4</td>
+				<td class="fit">JSR $C49D</td><td rowspan="1"><p>JSR to FFST ($C49D) to find file start
+entry.</p>
+</td></tr>
+		</tbody>
+			<tbody class="code">
+			
 				<tr><td class="fit">LD20</td><td class="fit">DAA7</td>
 				<td>20 9E EC</td>
-				<td class="fit">JSR $EC9E</td><td rowspan="1"><p>JSR to FFST ($C49D) to find file start
-entry.</p>
+				<td class="fit">JSR $EC9E</td><td rowspan="1"><p>JSR to STDIR ($EC9E) to start the
+directory loading function.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DAAA</td>
 				<td>20 37 D1</td>
-				<td class="fit">JSR $D137</td><td rowspan="1"><p>JSR to STDIR ($EC9E) to start the
-directory loading function.</p>
+				<td class="fit">JSR $D137</td><td rowspan="1"><p>JSR to GETBYT ($D137) to read first byte
+from the buffer.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DAAD</td>
 				<td>A6 82</td>
-				<td class="fit">LDX $82</td><td rowspan="1"><p>JSR to GETBYT ($D137) to read first byte
-from the buffer.</p>
+				<td class="fit">LDX $82</td><td rowspan="1"><p>Load .X with the active buffer number
+from LINDX ($82) .</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DAAF</td>
 				<td>9D 3E 02</td>
-				<td class="fit">STA $023E,X</td><td rowspan="1"><p>Load .X with the active buffer number
-from LINDX ($82) .</p>
+				<td class="fit">STA $023E,X</td><td rowspan="1"><p>Store the first byte (in .A) into
+CHNDAT,X ($023E,X) .</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">DAB2</td>
 				<td>A5 7F</td>
-				<td class="fit">LDA $7F</td><td rowspan="2"><p>Store the first byte (in .A) into
-CHNDAT,X ($023E,X) .</p>
+				<td class="fit">LDA $7F</td><td rowspan="2"><p>Load .A with the current drive number
+from DRVNUM ($7F) and use this value to
+set the last job drive LSTDRV ($028E) .</p>
 </td></tr>
 				<tr><td></td><td class="fit">DAB4</td>
 				<td>8D 8E 02</td>
@@ -21464,10 +21612,7 @@ CHNDAT,X ($023E,X) .</p>
 			
 				<tr><td class="fit"></td><td class="fit">DAB7</td>
 				<td>09 04</td>
-				<td class="fit">ORA #$04</td><td rowspan="2"><p>Load .A with the current drive number
-from DRVNUM ($7F) and use this value to
-set the last job drive LSTDRV ($028E) .
-OR the drive number in .A with $04 and
+				<td class="fit">ORA #$04</td><td rowspan="2"><p>OR the drive number in .A with $04 and
 store the result as the file type in
 FILTYP,X ($EC,X) .</p>
 </td></tr>
@@ -22979,12 +23124,21 @@ status in CHNRDY,X ($F2,X).</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Initialize variables for open channel</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">INITP</td><td class="fit">DCB6</td>
 				<td>A6 82</td>
-				<td class="fit">LDX $82</td><td rowspan="1"><p>Initialize variables for open channel:
-Load .X with the active buffer number
+				<td class="fit">LDX $82</td><td rowspan="1"><p>Load .X with the active buffer number
 from LINDX ($82) .</p>
 </td></tr>
 		</tbody>
@@ -23678,12 +23832,21 @@ type in FILTYP,X ($EC,X).</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Test flag</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">TSTFLG</td><td class="fit">DDA6</td>
 				<td>A6 82</td>
-				<td class="fit">LDX $82</td><td rowspan="1"><p>Test flag:
-Load .X with the active buffer number
+				<td class="fit">LDX $82</td><td rowspan="1"><p>Load .X with the active buffer number
 from LINDX ($82) .</p>
 </td></tr>
 		</tbody>
@@ -24088,13 +24251,21 @@ to TRACK ($80). Increment .Y.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Set track link to $00 and sector link to the last non-zero character in buffer</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">NULLNK</td><td class="fit">DE19</td>
 				<td>20 2B DE</td>
-				<td class="fit">JSR $DE2B</td><td rowspan="1"><p>Set track link to $00 and sector link to
-the last non-zero character in buffer.
-JSR to SETOO ($DE2B) to set up pointer
+				<td class="fit">JSR $DE2B</td><td rowspan="1"><p>JSR to SETOO ($DE2B) to set up pointer
 to header.</p>
 </td></tr>
 		</tbody>
@@ -28092,12 +28263,21 @@ This sets Z=l if they are equal.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Set null records in active buffer</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">NULBUF</td><td class="fit">E2E2</td>
 				<td>20 2B DE</td>
-				<td class="fit">JSR $DE2B</td><td rowspan="1"><p>Set null records in active buffer:
-JSR to SETOO ($DE2B) to set pointers to
+				<td class="fit">JSR $DE2B</td><td rowspan="1"><p>JSR to SETOO ($DE2B) to set pointers to
 start of data buffer.</p>
 </td></tr>
 		</tbody>
@@ -28197,13 +28377,22 @@ last record.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Add record size &amp; next record pointer</h1>
+<p>On exit: C=1 if crossed buffer boundary</p>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">ADDNR</td><td class="fit">E304</td>
 				<td>A6 82</td>
-				<td class="fit">LDX $82</td><td rowspan="1"><p>Add record size &amp; next record pointer:
-On exit: C=l if crossed buffer boundary
-Load .X with the channel number from
+				<td class="fit">LDX $82</td><td rowspan="1"><p>Load .X with the channel number from
 LINDX ($82) .</p>
 </td></tr>
 		</tbody>
@@ -28289,12 +28478,21 @@ for the link and set the carry flag.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Add blocks to a relative file</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">ADDREL</td><td class="fit">E31C</td>
 				<td>20 D3 D1</td>
-				<td class="fit">JSR $D1D3</td><td rowspan="1"><p>Add blocks to a relative file:
-JSR to SETDRN ($D1D3) to set drive #.</p>
+				<td class="fit">JSR $D1D3</td><td rowspan="1"><p>JSR to SETDRN ($D1D3) to set drive #.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
@@ -28627,7 +28825,7 @@ If the result is not $00, branch to AR35</p>
 				<td></td>
 				<td></td>
 				<td></td>
-				<td><h1>Check if there are enough blocks left</h1>
+				<td><p>Check if there are enough blocks left</p>
 </td>
 			</tr>
 		</tbody>
@@ -30337,12 +30535,21 @@ store the ASCII value in (CB+2)Y; ($A5)Y</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Transfer error message to error buffer</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">OKERR</td><td class="fit">E6BC</td>
 				<td>20 23 C1</td>
-				<td class="fit">JSR $C123</td><td rowspan="1"><p>Transfer error message to error buffer:
-JSR to ERROFF ($C123) to turn off error
+				<td class="fit">JSR $C123</td><td rowspan="1"><p>JSR to ERROFF ($C123) to turn off error
 LED.</p>
 </td></tr>
 		</tbody>
@@ -30565,14 +30772,22 @@ ready-to-talk.</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Move the error message from the error table to the error buffer</h1>
+<p>The tokens in the table are converted to words</p>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">ERMOVE</td><td class="fit">E706</td>
 				<td>AA</td>
-				<td class="fit">TAX</td><td rowspan="1"><p>Move the error message from the error
-table to the error buffer. The tokens
-in the table are converted to words
-Transfer the error message number from
+				<td class="fit">TAX</td><td rowspan="1"><p>Transfer the error message number from
 .A to .X.</p>
 </td></tr>
 		</tbody>
@@ -31669,20 +31884,29 @@ SIZE error and JSR to CMDER2 ($E645).</p>
 				<td class="fit">RTS</td><td rowspan="1"><p>Terminate routine with an RTS.</p>
 </td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Compute the running checksum in R1</h1>
+<p>On entry: .A = new byte to add</p>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">ADDSUM</td><td class="fit">E84B</td>
 				<td>18</td>
-				<td class="fit">CLC</td><td rowspan="1"><p>Compute the running checksum in R1:
-On entry: .A = new byte to add
-Clear the carry flag.</p>
+				<td class="fit">CLC</td><td rowspan="1"><p>Clear the carry flag.</p>
 </td></tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit"></td><td class="fit">E84C</td>
 				<td>65 87</td>
-				<td class="fit">ADC $87</td><td rowspan="2"><p>Add the byte in Rl ($8 7) to the byte in
+				<td class="fit">ADC $87</td><td rowspan="2"><p>Add the byte in R1 ($8 7) to the byte in
 .A and then add $00 to the result to
 add in the carry bit.</p>
 </td></tr>
@@ -40867,8 +41091,8 @@ to move head in STEPS ($4A) .</p>
 				<td></td>
 				<td></td>
 				<td></td>
-				<td><p>Search for a valid header block on this
-track. Up to 90 header and data blocks
+				<td><h1>Search for a valid header block on this track</h1>
+<p>Up to 90 header and data blocks
 are scanned while looking for a valid
 header block before this routine gives
 up. A valid header block must have:</p>
@@ -41557,13 +41781,21 @@ The characters decoded include:</p>
 				<td>60</td>
 				<td class="fit">RTS</td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Read in the track and sector that is specified in the header table</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
-				<tr><td class="fit">REED</td><td class="fit">F4CA</td>
+				<tr><td class="fit">READ</td><td class="fit">F4CA</td>
 				<td>C9 00</td>
-				<td class="fit">CMP #$00</td><td rowspan="3"><p>Read in the track and sector that is
-specified in the header table
-Check if this is a read job. If not,
+				<td class="fit">CMP #$00</td><td rowspan="3"><p>Check if this is a read job. If not,
 JMP to WRIGHT ($F4CE)</p>
 </td></tr>
 				<tr><td></td><td class="fit">F4CC</td>
@@ -41978,12 +42210,21 @@ clear the 6502' s overflow flag, and RTS</p>
 				<td>60</td>
 				<td class="fit">RTS</td></tr>
 		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Write contents of data buffer to disk</h1>
+</td>
+			</tr>
+		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">WRIGHT</td><td class="fit">F56E</td>
 				<td>C9 10</td>
-				<td class="fit">CMP #$10</td><td rowspan="3"><p>Write contents of data buffer to disk
-Compare job code in .A with $10 to check
+				<td class="fit">CMP #$10</td><td rowspan="3"><p>Compare job code in .A with $10 to check
 if this is write job. If not, JMP to
 VERIFY ($F691) .</p>
 </td></tr>
@@ -47093,15 +47334,24 @@ using .X &amp; .Y as counters</p>
 			
 				<tr><td class="fit"></td><td class="fit">FDC2</td>
 				<td>60</td>
-				<td class="fit">RTS</td><td rowspan="1"><p>RTS -<em>- WARNING WRITE MODE LEFT ON -</em>-</p>
+				<td class="fit">RTS</td><td rowspan="1"><p>RTS WARNING WRITE MODE LEFT ON</p>
 </td></tr>
+		</tbody>
+		<tbody class="header">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><h1>Write out NUM ($0621/2) bytes</h1>
+</td>
+			</tr>
 		</tbody>
 			<tbody class="code">
 			
 				<tr><td class="fit">WRTNUM</td><td class="fit">FDC3</td>
 				<td>AE 21 06</td>
-				<td class="fit">LDX $0621</td><td rowspan="2"><p>Write out NUM ($0621/2) bytes
-Load .X with the LSB and .Y with the
+				<td class="fit">LDX $0621</td><td rowspan="2"><p>Load .X with the LSB and .Y with the
 MSB of NUM ($0621/2) .</p>
 </td></tr>
 				<tr><td></td><td class="fit">FDC6</td>
